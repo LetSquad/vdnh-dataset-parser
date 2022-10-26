@@ -8,3 +8,6 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/vdnh_back'
     username: 'postgres'
     password: 'postgres'
+csv:
+  places-target: 'csv-target/places.csv'
+  events-target: 'csv-target/events.csv'

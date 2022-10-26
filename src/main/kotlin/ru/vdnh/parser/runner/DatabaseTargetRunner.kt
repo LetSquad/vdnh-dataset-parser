@@ -1,28 +1,23 @@
 package ru.vdnh.parser.runner
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
-import org.springframework.core.io.ClassPathResource
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import ru.vdnh.parser.getLogger
 import ru.vdnh.parser.model.dto.VdnhEventPlacesDTO
 import ru.vdnh.parser.model.dto.VdnhPlacesDTO
 import ru.vdnh.parser.model.dto.dataset.VdnhDatasetDTO
+import ru.vdnh.parser.repository.DatasetSourceRepository
 
 @Component
-class DatasetParserRunner(private val mapper: ObjectMapper) : ApplicationRunner {
+@Profile("database")
+class DatabaseTargetRunner(private val datasetRepository: DatasetSourceRepository) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments) {
-        val datasetSource = ClassPathResource("dataset/vdnh_dataset.json")
-        val dataset: VdnhDatasetDTO = mapper.readValue(datasetSource.inputStream)
-
-        val placesSource = ClassPathResource("dataset/vdnh_places.json")
-        val places: VdnhPlacesDTO = mapper.readValue(placesSource.inputStream)
-
-        val eventsSource = ClassPathResource("dataset/vdnh_events.json")
-        val events: VdnhEventPlacesDTO = mapper.readValue(eventsSource.inputStream)
+        val dataset: VdnhDatasetDTO = datasetRepository.getDataset()
+        val places: VdnhPlacesDTO = datasetRepository.getPlaces()
+        val events: VdnhEventPlacesDTO = datasetRepository.getEventPlaces()
 
         val categories = HashSet<String>()
         val types = HashSet<String>()
@@ -54,6 +49,6 @@ class DatasetParserRunner(private val mapper: ObjectMapper) : ApplicationRunner 
         .replace("'", "")
 
     companion object {
-        private val log = LoggerFactory.getLogger(DatasetParserRunner::class.java)
+        private val log = getLogger<DatabaseTargetRunner>()
     }
 }

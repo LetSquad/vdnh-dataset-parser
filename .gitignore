@@ -1,5 +1,5 @@
 .idea
 target
 
+*.csv
 *.iml
-.flattened-pom.xml
