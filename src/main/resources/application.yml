@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: vdnh-dataset-parser
+  main:
+    web-application-type: none
+    banner-mode: off
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/vdnh_back'
+    username: 'postgres'
+    password: 'postgres'
