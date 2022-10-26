@@ -12,12 +12,12 @@ import ru.vdnh.parser.service.CsvTargetService
 class CsvTargetRunner(private val csvTargetService: CsvTargetService) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments) {
-        log.info("Dataset parsing with target csv started")
+        log.info("Dataset parsing with target = csv started")
 
         csvTargetService.parsePlacesToCsv()
         csvTargetService.parseEventsToCsv()
 
-        log.info("Dataset parsing with target csv finished successfully")
+        log.info("Dataset parsing with target = csv finished successfully")
     }
 
     companion object {

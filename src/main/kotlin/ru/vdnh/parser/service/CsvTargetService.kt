@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import ru.vdnh.parser.mapper.EventMapper
 import ru.vdnh.parser.mapper.PlaceMapper
+import ru.vdnh.parser.model.VdnhDatasetParserConstants.CATEGORY_EVENT
 import ru.vdnh.parser.model.csv.EventCsv
 import ru.vdnh.parser.model.csv.PlaceCsv
 import ru.vdnh.parser.repository.CsvTargetRepository
@@ -31,9 +32,5 @@ class CsvTargetService(
             .filter { it.properties.cat == CATEGORY_EVENT }
             .map { eventMapper.dtoToCsv(it) }
         csvTargetRepository.saveEvents(events)
-    }
-
-    companion object {
-        private const val CATEGORY_EVENT = "event"
     }
 }

@@ -1,6 +1,7 @@
 package ru.vdnh.parser.model.dto.place
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.math.BigDecimal
 
 data class PlacePropertiesDTO(
     val title: String,
@@ -11,12 +12,17 @@ data class PlacePropertiesDTO(
     @JsonProperty("title_cn")
     val titleCn: String?,
 
+    val order: String,
+
     val type: String,
 
     @JsonProperty("type_en")
     val typeEn: String?,
 
-    val coordinates: List<Double>,
+    @JsonProperty("type_cn")
+    val typeCn: String?,
+
+    val coordinates: List<BigDecimal>,
 
     val url: String,
 
