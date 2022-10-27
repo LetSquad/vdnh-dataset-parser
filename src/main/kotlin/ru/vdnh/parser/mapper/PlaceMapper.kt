@@ -9,7 +9,7 @@ import ru.vdnh.parser.model.dto.place.PlaceDTO
 @Component
 class PlaceMapper(
     private val scheduleMapper: ScheduleMapper,
-    private val typeMapper: TypeMapper
+    private val locationTypeMapper: LocationTypeMapper
 ) {
 
     fun dtoToCsv(place: PlaceDTO) = PlaceCsv(
@@ -30,6 +30,6 @@ class PlaceMapper(
         latitude = place.properties.coordinates.first(),
         longitude = place.properties.coordinates.last(),
         schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(it) },
-        type = typeMapper.placeDtoToDomain(place)
+        type = locationTypeMapper.placeDtoToDomain(place)
     )
 }

@@ -15,7 +15,7 @@ class ScheduleMapper {
         friday = schedule.findScheduleByDay(5),
         saturday = schedule.findScheduleByDay(6),
         sunday = schedule.findScheduleByDay(7),
-        additionalInfo = schedule.findAdditionalInfo()
+        additionalInfo = schedule.retrieveAdditionalInfo()
     )
 
     private fun List<ScheduleDTO>.findScheduleByDay(dayNumber: Int): String? = find { schedule ->
@@ -36,7 +36,7 @@ class ScheduleMapper {
         return@find false
     }?.right
 
-    private fun List<ScheduleDTO>.findAdditionalInfo(): String? {
+    private fun List<ScheduleDTO>.retrieveAdditionalInfo(): String? {
         val additionalInfo: List<ScheduleDTO> = filter { schedule -> !NOT_ADDITIONAL_INFO.any { schedule.left.contains(it) } }
         if (additionalInfo.isEmpty()) return null
 
@@ -50,7 +50,6 @@ class ScheduleMapper {
     }
 
     companion object {
-
         private const val DAILY = "Ежедневно"
         private const val WORKDAYS = "Будни"
 

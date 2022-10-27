@@ -6,7 +6,7 @@ import ru.vdnh.parser.model.domain.Event
 import ru.vdnh.parser.model.dto.event.EventPlaceDTO
 
 @Component
-class EventMapper(private val typeMapper: TypeMapper) {
+class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
 
     fun dtoToCsv(event: EventPlaceDTO) = EventCsv(
         id = event.id,
@@ -24,6 +24,6 @@ class EventMapper(private val typeMapper: TypeMapper) {
         imageUrl = event.properties.pic,
         latitude = event.properties.coordinates?.first(),
         longitude = event.properties.coordinates?.last(),
-        type = typeMapper.eventDtoToDomain(event)
+        type = locationTypeMapper.eventDtoToDomain(event)
     )
 }

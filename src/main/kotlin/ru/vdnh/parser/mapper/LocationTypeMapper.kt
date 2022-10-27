@@ -4,9 +4,10 @@ import org.springframework.stereotype.Component
 import ru.vdnh.parser.model.domain.LocationType
 import ru.vdnh.parser.model.dto.event.EventPlaceDTO
 import ru.vdnh.parser.model.dto.place.PlaceDTO
+import ru.vdnh.parser.model.entity.LocationTypeEntity
 
 @Component
-class TypeMapper {
+class LocationTypeMapper {
 
     fun placeDtoToDomain(place: PlaceDTO): LocationType {
         val typeEn: String = place.properties.typeEn
@@ -14,9 +15,9 @@ class TypeMapper {
 
         return LocationType(
             code = typeEn.normalizeType(),
-            name = place.properties.type,
-            nameEn = typeEn,
-            nameCn = place.properties.typeCn
+            name = place.properties.type.trim(),
+            nameEn = typeEn.trim(),
+            nameCn = place.properties.typeCn?.trim()
         )
     }
 
@@ -26,13 +27,20 @@ class TypeMapper {
 
         return LocationType(
             code = typeEn.normalizeType(),
-            name = event.properties.type!!,
-            nameEn = typeEn,
-            nameCn = event.properties.typeCn
+            name = event.properties.type!!.trim(),
+            nameEn = typeEn.trim(),
+            nameCn = event.properties.typeCn?.trim()
         )
     }
 
-    fun String.normalizeType() = uppercase().trim()
+    fun domainToEntity(locationType: LocationType) = LocationTypeEntity(
+        code = locationType.code,
+        name = locationType.name,
+        nameEn = locationType.nameEn,
+        nameCn = locationType.nameCn
+    )
+
+    private fun String.normalizeType() = uppercase().trim()
         .replace(' ', '_')
         .replace("'", "")
 
