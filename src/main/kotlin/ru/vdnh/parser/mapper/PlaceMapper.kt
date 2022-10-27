@@ -31,6 +31,7 @@ class PlaceMapper(
         url = place.properties.url,
         imageUrl = place.properties.pic,
         ticketsUrl = place.properties.ticketsLink.ifBlank { null },
+        isActive = !CLOSED_PLACES.contains(place.id),
         latitude = place.properties.coordinates.first(),
         longitude = place.properties.coordinates.last(),
         schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
@@ -46,11 +47,17 @@ class PlaceMapper(
         url = place.url,
         imageUrl = place.imageUrl,
         ticketsUrl = place.ticketsUrl,
-        isActive = true,
+        isActive = place.isActive,
         coordinatesId = coordinatesId,
         scheduleId = place.schedule?.id,
         typeCode = place.type.code,
         subjectCode = null,
         createdAt = Timestamp.from(Instant.now())
     )
+
+    companion object {
+        private val CLOSED_PLACES = listOf(
+            3581L
+        )
+    }
 }

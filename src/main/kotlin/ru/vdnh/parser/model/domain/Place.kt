@@ -11,6 +11,7 @@ data class Place(
     val url: String,
     val imageUrl: String?,
     val ticketsUrl: String?,
+    val isActive: Boolean,
 
     val latitude: BigDecimal,
     val longitude: BigDecimal,
