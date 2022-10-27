@@ -18,7 +18,7 @@ class ScheduleMapper {
         additionalInfo = schedule.findAdditionalInfo()
     )
 
-    fun List<ScheduleDTO>.findScheduleByDay(dayNumber: Int): String? = find { schedule ->
+    private fun List<ScheduleDTO>.findScheduleByDay(dayNumber: Int): String? = find { schedule ->
         if (schedule.left == DAILY) return@find true
         if (dayNumber < 6 && schedule.left == WORKDAYS) return@find true
 
@@ -36,10 +36,17 @@ class ScheduleMapper {
         return@find false
     }?.right
 
-    fun List<ScheduleDTO>.findAdditionalInfo(): String? {
-        val additionalInfo: ScheduleDTO = find { schedule -> !NOT_ADDITIONAL_INFO.any { schedule.left.contains(it) } }
-            ?: return null
-        return if (additionalInfo.right.isBlank()) additionalInfo.left else "${additionalInfo.left}: ${additionalInfo.right}"
+    private fun List<ScheduleDTO>.findAdditionalInfo(): String? {
+        val additionalInfo: List<ScheduleDTO> = filter { schedule -> !NOT_ADDITIONAL_INFO.any { schedule.left.contains(it) } }
+        if (additionalInfo.isEmpty()) return null
+
+        return additionalInfo.joinToString("\n") { scheduleInfo ->
+            if (scheduleInfo.right.isBlank()) {
+                scheduleInfo.left
+            } else {
+                "${scheduleInfo.left}: ${scheduleInfo.right}"
+            }
+        }
     }
 
     companion object {
