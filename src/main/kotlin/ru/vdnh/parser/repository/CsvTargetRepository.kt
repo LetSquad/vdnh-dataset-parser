@@ -20,7 +20,8 @@ class CsvTargetRepository(private val csvProperties: CsvProperties) {
                 printer.printRecord(
                     place.id,
                     place.title,
-                    place.type
+                    place.type,
+                    place.priority
                 )
             }
         }
@@ -33,7 +34,8 @@ class CsvTargetRepository(private val csvProperties: CsvProperties) {
                 printer.printRecord(
                     event.id,
                     event.title,
-                    event.type
+                    event.type,
+                    event.priority
                 )
             }
         }

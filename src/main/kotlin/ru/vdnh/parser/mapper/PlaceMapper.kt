@@ -18,7 +18,8 @@ class PlaceMapper(
     fun dtoToCsv(place: PlaceDTO) = PlaceCsv(
         id = place.id,
         title = place.properties.title,
-        type = place.properties.type
+        type = place.properties.type,
+        priority = place.properties.order.toInt()
     )
 
     fun dtoToDomain(place: PlaceDTO, datasetPlace: DatasetPlaceDTO?) = Place(

@@ -9,7 +9,7 @@ import ru.vdnh.parser.mapper.EventMapper
 import ru.vdnh.parser.mapper.LocationTypeMapper
 import ru.vdnh.parser.mapper.PlaceMapper
 import ru.vdnh.parser.mapper.ScheduleMapper
-import ru.vdnh.parser.model.VdnhDatasetParserConstants.CATEGORY_EVENT
+import ru.vdnh.parser.model.VdnhDatasetParserConstants.EVENT_CATEGORY
 import ru.vdnh.parser.model.domain.Coordinates
 import ru.vdnh.parser.model.domain.Event
 import ru.vdnh.parser.model.domain.LocationType
@@ -52,7 +52,7 @@ class DatabaseTargetService(
         val places: List<Place> = vdnhPlaces.values
             .map { placeMapper.dtoToDomain(it, vdnhDataset.places[it.id.toString()]) }
         val events: List<Event> = vdnhEvents.values
-            .filter { it.properties.cat == CATEGORY_EVENT }
+            .filter { it.properties.cat == EVENT_CATEGORY }
             .map { eventMapper.dtoToDomain(it) }
 
         val locationTypes = HashSet<LocationType>()

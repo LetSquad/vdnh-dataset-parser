@@ -14,7 +14,8 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
     fun dtoToCsv(event: EventPlaceDTO) = EventCsv(
         id = event.id,
         title = event.properties.title,
-        type = event.properties.type
+        type = event.properties.type!!,
+        priority = event.properties.order.toInt()
     )
 
     fun dtoToDomain(event: EventPlaceDTO) = Event(
