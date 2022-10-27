@@ -8,7 +8,7 @@ import ru.vdnh.parser.model.entity.LocationTypeEntity
 class LocationTypeJdbc(private val jdbcTemplate: JdbcTemplate) : LocationTypeRepository {
 
     override fun clearLocationTypes() {
-        jdbcTemplate.update("TRUNCATE TABLE location_type")
+        jdbcTemplate.update("TRUNCATE TABLE location_type CASCADE")
     }
 
     override fun saveLocationTypes(locationTypes: List<LocationTypeEntity>) {

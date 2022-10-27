@@ -8,7 +8,7 @@ import ru.vdnh.parser.model.entity.CoordinatesEntity
 class CoordinatesJdbc(private val jdbcTemplate: JdbcTemplate) : CoordinatesRepository {
 
     override fun clearCoordinates() {
-        jdbcTemplate.update("TRUNCATE TABLE coordinates")
+        jdbcTemplate.update("TRUNCATE TABLE coordinates CASCADE")
     }
 
     override fun saveCoordinates(coordinatesList: List<CoordinatesEntity>) {

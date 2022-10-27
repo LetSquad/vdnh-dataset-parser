@@ -1,6 +1,6 @@
-package ru.vdnh.parser.model.domain
+package ru.vdnh.parser.model.entity
 
-data class Schedule(
+data class ScheduleEntity(
     val id: Long,
     val monday: String?,
     val tuesday: String?,

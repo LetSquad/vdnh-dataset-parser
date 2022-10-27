@@ -5,6 +5,9 @@ import ru.vdnh.parser.model.csv.PlaceCsv
 import ru.vdnh.parser.model.domain.Place
 import ru.vdnh.parser.model.dto.dataset.DatasetPlaceDTO
 import ru.vdnh.parser.model.dto.place.PlaceDTO
+import ru.vdnh.parser.model.entity.PlaceEntity
+import java.sql.Timestamp
+import java.time.Instant
 
 @Component
 class PlaceMapper(
@@ -29,7 +32,24 @@ class PlaceMapper(
         ticketsUrl = place.properties.ticketsLink.ifBlank { null },
         latitude = place.properties.coordinates.first(),
         longitude = place.properties.coordinates.last(),
-        schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(it) },
+        schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
         type = locationTypeMapper.placeDtoToDomain(place)
+    )
+
+    fun domainToEntity(place: Place, coordinatesId: Long) = PlaceEntity(
+        id = place.id,
+        title = place.title,
+        titleEn = place.titleEn,
+        titleCn = place.titleCn,
+        priority = place.priority,
+        url = place.url,
+        imageUrl = place.imageUrl,
+        ticketsUrl = place.ticketsUrl,
+        isActive = true,
+        coordinatesId = coordinatesId,
+        scheduleId = place.schedule?.id,
+        typeCode = place.type.code,
+        subjectCode = null,
+        createdAt = Timestamp.from(Instant.now())
     )
 }

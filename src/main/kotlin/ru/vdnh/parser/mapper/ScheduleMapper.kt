@@ -3,11 +3,13 @@ package ru.vdnh.parser.mapper
 import org.springframework.stereotype.Component
 import ru.vdnh.parser.model.domain.Schedule
 import ru.vdnh.parser.model.dto.dataset.ScheduleDTO
+import ru.vdnh.parser.model.entity.ScheduleEntity
 
 @Component
 class ScheduleMapper {
 
-    fun dtoToDomain(schedule: List<ScheduleDTO>) = Schedule(
+    fun dtoToDomain(id: Long, schedule: List<ScheduleDTO>) = Schedule(
+        id = id,
         monday = schedule.findScheduleByDay(1),
         tuesday = schedule.findScheduleByDay(2),
         wednesday = schedule.findScheduleByDay(3),
@@ -16,6 +18,18 @@ class ScheduleMapper {
         saturday = schedule.findScheduleByDay(6),
         sunday = schedule.findScheduleByDay(7),
         additionalInfo = schedule.retrieveAdditionalInfo()
+    )
+
+    fun domainToEntity(schedule: Schedule) = ScheduleEntity(
+        id = schedule.id,
+        monday = schedule.monday,
+        tuesday = schedule.tuesday,
+        wednesday = schedule.wednesday,
+        thursday = schedule.thursday,
+        friday = schedule.friday,
+        saturday = schedule.saturday,
+        sunday = schedule.sunday,
+        additionalInfo = schedule.additionalInfo
     )
 
     private fun List<ScheduleDTO>.findScheduleByDay(dayNumber: Int): String? = find { schedule ->

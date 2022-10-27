@@ -8,6 +8,7 @@ import ru.vdnh.parser.mapper.CoordinatesMapper
 import ru.vdnh.parser.mapper.EventMapper
 import ru.vdnh.parser.mapper.LocationTypeMapper
 import ru.vdnh.parser.mapper.PlaceMapper
+import ru.vdnh.parser.mapper.ScheduleMapper
 import ru.vdnh.parser.model.VdnhDatasetParserConstants.CATEGORY_EVENT
 import ru.vdnh.parser.model.domain.Coordinates
 import ru.vdnh.parser.model.domain.Event
@@ -18,7 +19,10 @@ import ru.vdnh.parser.model.dto.VdnhPlacesDTO
 import ru.vdnh.parser.model.dto.dataset.VdnhDatasetDTO
 import ru.vdnh.parser.repository.CoordinatesRepository
 import ru.vdnh.parser.repository.DatasetSourceRepository
+import ru.vdnh.parser.repository.EventRepository
 import ru.vdnh.parser.repository.LocationTypeRepository
+import ru.vdnh.parser.repository.PlaceRepository
+import ru.vdnh.parser.repository.ScheduleRepository
 import java.math.BigDecimal
 
 @Service
@@ -26,11 +30,15 @@ import java.math.BigDecimal
 class DatabaseTargetService(
     private val locationTypeMapper: LocationTypeMapper,
     private val coordinatesMapper: CoordinatesMapper,
+    private val scheduleMapper: ScheduleMapper,
     private val placeMapper: PlaceMapper,
     private val eventMapper: EventMapper,
     private val datasetRepository: DatasetSourceRepository,
     private val locationTypeRepository: LocationTypeRepository,
-    private val coordinatesRepository: CoordinatesRepository
+    private val coordinatesRepository: CoordinatesRepository,
+    private val scheduleRepository: ScheduleRepository,
+    private val placeRepository: PlaceRepository,
+    private val eventRepository: EventRepository
 ) {
 
     @Transactional
@@ -68,6 +76,9 @@ class DatabaseTargetService(
         log.info("3 – Clearing database")
         locationTypeRepository.clearLocationTypes()
         coordinatesRepository.clearCoordinates()
+        scheduleRepository.clearSchedules()
+        placeRepository.clearPlaces()
+        eventRepository.clearEvents()
 
         log.info("4 – Filling database")
         locationTypes.map { locationTypeMapper.domainToEntity(it) }
@@ -75,6 +86,12 @@ class DatabaseTargetService(
         coordinates.values
             .map { coordinatesMapper.domainToEntity(it) }
             .also { coordinatesRepository.saveCoordinates(it) }
+        places.mapNotNull { place -> place.schedule?.let { scheduleMapper.domainToEntity(it) } }
+            .also { scheduleRepository.saveSchedules(it) }
+        places.map { placeMapper.domainToEntity(it, coordinates.getValue(it.latitude to it.longitude).id) }
+            .also { placeRepository.savePlaces(it) }
+        events.map { eventMapper.domainToEntity(it, coordinates[it.latitude to it.longitude]?.id) }
+            .also { eventRepository.saveEvents(it) }
     }
 
     companion object {
