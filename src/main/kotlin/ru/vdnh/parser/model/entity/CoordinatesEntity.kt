@@ -6,6 +6,6 @@ data class CoordinatesEntity(
     val id: Long,
     val latitude: BigDecimal,
     val longitude: BigDecimal,
-    val connections: String?,
+    val connections: String,
     val loadFactor: String?
 )

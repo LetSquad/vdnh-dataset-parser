@@ -46,30 +46,40 @@ class DatabaseTargetService(
         log.info("1 – Parsing datasets")
         val vdnhDataset: VdnhDatasetDTO = datasetRepository.getDataset()
         val vdnhPlaces: VdnhPlacesDTO = datasetRepository.getPlaces()
-        val vdnhEvents: VdnhEventPlacesDTO = datasetRepository.getEventPlaces()
+        val vdnhEventPlaces: VdnhEventPlacesDTO = datasetRepository.getEventPlaces()
 
         log.info("2 – Mapping data")
-        val places: List<Place> = vdnhPlaces.values
-            .map { placeMapper.dtoToDomain(it, vdnhDataset.places[it.id.toString()]) }
-        val events: List<Event> = vdnhEvents.values
+        val places: Map<Long, Place> = vdnhPlaces.values
+            .associate { it.id to placeMapper.dtoToDomain(it, vdnhDataset.places[it.id.toString()]) }
+        val events: Map<Long, Event> = vdnhEventPlaces.values
             .filter { it.properties.cat == EVENT_CATEGORY }
-            .map { eventMapper.dtoToDomain(it) }
+            .associate { it.id to eventMapper.dtoToDomain(it) }
 
         val locationTypes = HashSet<LocationType>()
         val coordinates = HashMap<Pair<BigDecimal, BigDecimal>, Coordinates>()
 
-        for (place in places) {
+        for (place in places.values) {
             locationTypes.add(place.type)
             if (!coordinates.containsKey(place.latitude to place.longitude)) {
                 val coordinatesId: Long = (coordinates.size + 1).toLong()
-                coordinates[place.latitude to place.longitude] = Coordinates(coordinatesId, place.latitude, place.longitude)
+                coordinates[place.latitude to place.longitude] = Coordinates(
+                    id = coordinatesId,
+                    latitude = place.latitude,
+                    longitude = place.longitude,
+                    connections = vdnhEventPlaces.getValue(place.id.toString()).properties.attractions
+                )
             }
         }
-        for (event in events) {
+        for (event in events.values) {
             locationTypes.add(event.type)
             if (event.longitude != null && event.latitude != null && !coordinates.containsKey(event.latitude to event.longitude)) {
                 val coordinatesId: Long = (coordinates.size + 1).toLong()
-                coordinates[event.latitude to event.longitude] = Coordinates(coordinatesId, event.latitude, event.longitude)
+                coordinates[event.latitude to event.longitude] = Coordinates(
+                    id = coordinatesId,
+                    latitude = event.latitude,
+                    longitude = event.longitude,
+                    connections = vdnhEventPlaces.getValue(event.id.toString()).properties.attractions
+                )
             }
         }
 
@@ -83,14 +93,41 @@ class DatabaseTargetService(
         log.info("4 – Filling database")
         locationTypes.map { locationTypeMapper.domainToEntity(it) }
             .also { locationTypeRepository.saveLocationTypes(it) }
+
+        val unknownNeighbors = HashSet<Long>()
         coordinates.values
+            .map { coordinate ->
+                coordinate.copy(
+                    connections = coordinate.connections.mapNotNull {
+                        val neighborPlace: Place? = places[it]
+                        if (neighborPlace != null) {
+                            return@mapNotNull coordinates.getValue(neighborPlace.latitude to neighborPlace.longitude).id
+                        }
+
+                        val neighborEvent: Event? = events[it]
+                        if (neighborEvent?.latitude != null && neighborEvent.longitude != null) {
+                            return@mapNotNull coordinates.getValue(neighborEvent.latitude to neighborEvent.longitude).id
+                        }
+
+                        unknownNeighbors.add(it)
+                        return@mapNotNull null
+                    }
+                )
+            }
             .map { coordinatesMapper.domainToEntity(it) }
             .also { coordinatesRepository.saveCoordinates(it) }
-        places.mapNotNull { place -> place.schedule?.let { scheduleMapper.domainToEntity(it) } }
+        if (unknownNeighbors.isNotEmpty()) {
+            log.warn("Unknown neighbor ids = $unknownNeighbors")
+        }
+
+        places.values
+            .mapNotNull { place -> place.schedule?.let { scheduleMapper.domainToEntity(it) } }
             .also { scheduleRepository.saveSchedules(it) }
-        places.map { placeMapper.domainToEntity(it, coordinates.getValue(it.latitude to it.longitude).id) }
+        places.values
+            .map { placeMapper.domainToEntity(it, coordinates.getValue(it.latitude to it.longitude).id) }
             .also { placeRepository.savePlaces(it) }
-        events.map { eventMapper.domainToEntity(it, coordinates[it.latitude to it.longitude]?.id) }
+        events.values
+            .map { eventMapper.domainToEntity(it, coordinates[it.latitude to it.longitude]?.id) }
             .also { eventRepository.saveEvents(it) }
     }
 
