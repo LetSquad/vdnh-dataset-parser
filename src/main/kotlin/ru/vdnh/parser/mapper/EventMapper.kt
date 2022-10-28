@@ -5,6 +5,7 @@ import ru.vdnh.parser.model.csv.EventCsv
 import ru.vdnh.parser.model.domain.Event
 import ru.vdnh.parser.model.dto.event.EventPlaceDTO
 import ru.vdnh.parser.model.entity.EventEntity
+import ru.vdnh.parser.model.entity.EventPlaceEntity
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -28,6 +29,7 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
         imageUrl = event.properties.pic,
         latitude = event.properties.coordinates?.first(),
         longitude = event.properties.coordinates?.last(),
+        placeIds = event.properties.places?.map { it.toLong() } ?: emptyList(),
         type = locationTypeMapper.eventDtoToDomain(event)
     )
 
@@ -48,4 +50,11 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
         subjectCode = null,
         createdAt = Timestamp.from(Instant.now())
     )
+
+    fun domainToEventPlaceEntities(event: Event): List<EventPlaceEntity> = event.placeIds.map { placeId ->
+        EventPlaceEntity(
+            eventId = event.id,
+            placeId = placeId
+        )
+    }
 }

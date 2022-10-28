@@ -14,5 +14,7 @@ data class Event(
     val latitude: BigDecimal?,
     val longitude: BigDecimal?,
 
+    val placeIds: List<Long>,
+
     val type: LocationType
 )

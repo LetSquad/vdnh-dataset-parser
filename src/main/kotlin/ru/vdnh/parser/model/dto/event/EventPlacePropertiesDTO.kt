@@ -26,6 +26,8 @@ data class EventPlacePropertiesDTO(
 
     val coordinates: List<BigDecimal>?,
 
+    val places: List<String>?,
+
     val attractions: List<Long>,
 
     val url: String,

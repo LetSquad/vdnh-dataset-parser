@@ -19,6 +19,7 @@ import ru.vdnh.parser.model.dto.VdnhPlacesDTO
 import ru.vdnh.parser.model.dto.dataset.VdnhDatasetDTO
 import ru.vdnh.parser.repository.CoordinatesRepository
 import ru.vdnh.parser.repository.DatasetSourceRepository
+import ru.vdnh.parser.repository.EventPlaceRepository
 import ru.vdnh.parser.repository.EventRepository
 import ru.vdnh.parser.repository.LocationTypeRepository
 import ru.vdnh.parser.repository.PlaceRepository
@@ -38,7 +39,8 @@ class DatabaseTargetService(
     private val coordinatesRepository: CoordinatesRepository,
     private val scheduleRepository: ScheduleRepository,
     private val placeRepository: PlaceRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val eventPlaceRepository: EventPlaceRepository
 ) {
 
     @Transactional
@@ -84,11 +86,7 @@ class DatabaseTargetService(
         }
 
         log.info("3 – Clearing database")
-        locationTypeRepository.clearLocationTypes()
-        coordinatesRepository.clearCoordinates()
-        scheduleRepository.clearSchedules()
-        placeRepository.clearPlaces()
-        eventRepository.clearEvents()
+        clearDatabase()
 
         log.info("4 – Filling database")
         locationTypes.map { locationTypeMapper.domainToEntity(it) }
@@ -129,6 +127,18 @@ class DatabaseTargetService(
         events.values
             .map { eventMapper.domainToEntity(it, coordinates[it.latitude to it.longitude]?.id) }
             .also { eventRepository.saveEvents(it) }
+        events.values
+            .flatMap { eventMapper.domainToEventPlaceEntities(it) }
+            .also { eventPlaceRepository.saveEventPlaces(it) }
+    }
+
+    private fun clearDatabase() {
+        locationTypeRepository.clearLocationTypes()
+        coordinatesRepository.clearCoordinates()
+        scheduleRepository.clearSchedules()
+        placeRepository.clearPlaces()
+        eventRepository.clearEvents()
+        eventPlaceRepository.clearEventPlaces()
     }
 
     companion object {
