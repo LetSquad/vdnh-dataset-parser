@@ -32,8 +32,8 @@ class PlaceMapper(
         imageUrl = place.properties.pic,
         ticketsUrl = place.properties.ticketsLink.ifBlank { null },
         isActive = !CLOSED_PLACES.contains(place.id),
-        latitude = place.properties.coordinates.first(),
-        longitude = place.properties.coordinates.last(),
+        latitude = place.properties.coordinates.last(),
+        longitude = place.properties.coordinates.first(),
         schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
         type = locationTypeMapper.placeDtoToDomain(place)
     )

@@ -27,8 +27,8 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
         priority = event.properties.order.toInt(),
         url = event.properties.url,
         imageUrl = event.properties.pic,
-        latitude = event.properties.coordinates?.first(),
-        longitude = event.properties.coordinates?.last(),
+        latitude = event.properties.coordinates?.last(),
+        longitude = event.properties.coordinates?.first(),
         placeIds = event.properties.places?.map { it.toLong() } ?: emptyList(),
         type = locationTypeMapper.eventDtoToDomain(event)
     )
