@@ -16,6 +16,7 @@ import ru.vdnh.parser.model.domain.LocationType
 import ru.vdnh.parser.model.domain.Place
 import ru.vdnh.parser.model.dto.VdnhEventPlacesDTO
 import ru.vdnh.parser.model.dto.VdnhPlacesDTO
+import ru.vdnh.parser.model.dto.VdnhWorkloadDTO
 import ru.vdnh.parser.model.dto.dataset.VdnhDatasetDTO
 import ru.vdnh.parser.repository.CoordinatesRepository
 import ru.vdnh.parser.repository.DatasetSourceRepository
@@ -49,6 +50,7 @@ class DatabaseTargetService(
         val vdnhDataset: VdnhDatasetDTO = datasetRepository.getDataset()
         val vdnhPlaces: VdnhPlacesDTO = datasetRepository.getPlaces()
         val vdnhEventPlaces: VdnhEventPlacesDTO = datasetRepository.getEventPlaces()
+        val vdnhWorkload: VdnhWorkloadDTO = datasetRepository.getWorkload()
 
         log.info("2 – Mapping data")
         val places: Map<Long, Place> = vdnhPlaces.values
@@ -68,7 +70,8 @@ class DatabaseTargetService(
                     id = coordinatesId,
                     latitude = place.latitude,
                     longitude = place.longitude,
-                    connections = vdnhEventPlaces.getValue(place.id.toString()).properties.attractions
+                    connections = vdnhEventPlaces.getValue(place.id.toString()).properties.attractions,
+                    loadFactor = vdnhWorkload[place.id.toString()]?.workload
                 )
             }
         }

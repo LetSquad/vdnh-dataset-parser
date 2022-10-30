@@ -13,6 +13,6 @@ class CoordinatesMapper(private val mapper: ObjectMapper) {
         latitude = coordinates.latitude,
         longitude = coordinates.longitude,
         connections = mapper.writeValueAsString(coordinates.connections),
-        loadFactor = null
+        loadFactor = coordinates.loadFactor?.let { mapper.writeValueAsString(it) }
     )
 }

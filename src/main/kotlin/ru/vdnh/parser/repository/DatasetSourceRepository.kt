@@ -6,6 +6,7 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Repository
 import ru.vdnh.parser.model.dto.VdnhEventPlacesDTO
 import ru.vdnh.parser.model.dto.VdnhPlacesDTO
+import ru.vdnh.parser.model.dto.VdnhWorkloadDTO
 import ru.vdnh.parser.model.dto.dataset.VdnhDatasetDTO
 
 @Repository
@@ -26,9 +27,15 @@ class DatasetSourceRepository(private val mapper: ObjectMapper) {
         return mapper.readValue(eventPlacesSource.inputStream)
     }
 
+    fun getWorkload(): VdnhWorkloadDTO {
+        val workloadSource = ClassPathResource(WORKLOAD_SOURCE)
+        return mapper.readValue(workloadSource.inputStream)
+    }
+
     companion object {
         private const val DATASET_SOURCE = "dataset/vdnh_dataset.json"
         private const val PLACES_SOURCE = "dataset/vdnh_places.json"
         private const val EVENT_PLACES_SOURCE = "dataset/vdnh_events.json"
+        private const val WORKLOAD_SOURCE = "dataset/vdnh_workload.json"
     }
 }
