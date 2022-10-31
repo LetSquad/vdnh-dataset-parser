@@ -31,5 +31,7 @@ data class PlacePropertiesDTO(
 
     val pic: String?,
 
-    val icon: String
+    val icon: String,
+
+    val color: String
 )

@@ -8,7 +8,9 @@ data class LocationType(
     val name: String,
     val nameEn: String,
     val nameCn: String?,
+
     val iconCode: String,
+    val iconColor: String,
 
     val placement: LocationPlacement
 )

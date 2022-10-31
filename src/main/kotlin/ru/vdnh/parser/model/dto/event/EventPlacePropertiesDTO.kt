@@ -34,5 +34,7 @@ data class EventPlacePropertiesDTO(
 
     val pic: String?,
 
-    val icon: String?
+    val icon: String?,
+
+    val color: String?
 )

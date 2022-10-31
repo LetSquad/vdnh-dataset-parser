@@ -21,6 +21,7 @@ class LocationTypeMapper {
             nameEn = typeEn.trim(),
             nameCn = place.properties.typeCn?.trim(),
             iconCode = place.properties.icon,
+            iconColor = place.properties.color,
             placement = if (INDOORS_LOCATIONS.contains(code)) {
                 LocationPlacement.INDOORS
             } else {
@@ -40,6 +41,7 @@ class LocationTypeMapper {
             nameEn = typeEn.trim(),
             nameCn = event.properties.typeCn?.trim(),
             iconCode = event.properties.icon!!,
+            iconColor = event.properties.color!!,
             placement = if (INDOORS_LOCATIONS.contains(code)) {
                 LocationPlacement.INDOORS
             } else {
@@ -53,7 +55,8 @@ class LocationTypeMapper {
         name = locationType.name,
         nameEn = locationType.nameEn,
         nameCn = locationType.nameCn,
-        iconCode = locationType.iconCode
+        iconCode = locationType.iconCode,
+        iconColor = locationType.iconColor
     )
 
     private fun String.normalizeType() = uppercase().trim()
