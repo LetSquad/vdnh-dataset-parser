@@ -21,7 +21,9 @@ class CsvTargetRepository(private val csvProperties: CsvProperties) {
                     place.id,
                     place.title,
                     place.type,
-                    place.priority
+                    place.priority,
+                    place.placement,
+                    place.paymentConditions
                 )
             }
         }
@@ -35,7 +37,9 @@ class CsvTargetRepository(private val csvProperties: CsvProperties) {
                     event.id,
                     event.title,
                     event.type,
-                    event.priority
+                    event.priority,
+                    event.placement,
+                    event.paymentConditions
                 )
             }
         }

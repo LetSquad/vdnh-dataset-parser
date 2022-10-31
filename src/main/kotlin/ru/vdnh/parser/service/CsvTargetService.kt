@@ -22,7 +22,8 @@ class CsvTargetService(
     fun parsePlacesToCsv() {
         val places: List<PlaceCsv> = datasetRepository.getPlaces()
             .values
-            .map { placeMapper.dtoToCsv(it) }
+            .map { placeMapper.dtoToDomain(it) }
+            .map { placeMapper.domainToCsvDto(it)  }
         csvTargetRepository.savePlaces(places)
     }
 
@@ -30,7 +31,8 @@ class CsvTargetService(
         val events: List<EventCsv> = datasetRepository.getEventPlaces()
             .values
             .filter { it.properties.cat == EVENT_CATEGORY }
-            .map { eventMapper.dtoToCsv(it) }
+            .map { eventMapper.dtoToDomain(it) }
+            .map { eventMapper.domainToCsvDto(it)  }
         csvTargetRepository.saveEvents(events)
     }
 }

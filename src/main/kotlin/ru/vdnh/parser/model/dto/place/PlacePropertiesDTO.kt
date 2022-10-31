@@ -29,5 +29,7 @@ data class PlacePropertiesDTO(
     @JsonProperty("tickets_link")
     val ticketsLink: String,
 
-    val pic: String?
+    val pic: String?,
+
+    val icon: String
 )

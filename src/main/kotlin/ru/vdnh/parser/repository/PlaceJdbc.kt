@@ -16,9 +16,9 @@ class PlaceJdbc(private val jdbcTemplate: JdbcTemplate) : PlaceRepository {
     override fun savePlaces(places: List<PlaceEntity>) {
         jdbcTemplate.batchUpdate(
             "INSERT INTO place " +
-                    "(id, title, title_en, title_cn, priority, url, image_url, tickets_url, " +
-                    "is_active, coordinates_id, schedule_id, type_code, subject_code, created_at) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "(id, title, title_en, title_cn, priority, visit_time_minutes, placement, payment_conditions, url, " +
+                    "image_url, tickets_url, is_active, coordinates_id, schedule_id, type_code, subject_code, created_at) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             places,
             100
         ) { ps, place ->
@@ -27,15 +27,18 @@ class PlaceJdbc(private val jdbcTemplate: JdbcTemplate) : PlaceRepository {
             ps.setString(3, place.titleEn)
             ps.setString(4, place.titleCn)
             ps.setObject(5, place.priority)
-            ps.setString(6, place.url)
-            ps.setString(7, place.imageUrl)
-            ps.setString(8, place.ticketsUrl)
-            ps.setBoolean(9, place.isActive)
-            ps.setLong(10, place.coordinatesId)
-            ps.setObject(11, place.scheduleId)
-            ps.setString(12, place.typeCode)
-            ps.setString(13, place.subjectCode)
-            ps.setTimestamp(14, place.createdAt)
+            ps.setInt(6, place.visitTimeMinutes)
+            ps.setString(7, place.placement.name)
+            ps.setString(8, place.paymentConditions.name)
+            ps.setString(9, place.url)
+            ps.setString(10, place.imageUrl)
+            ps.setString(11, place.ticketsUrl)
+            ps.setBoolean(12, place.isActive)
+            ps.setLong(13, place.coordinatesId)
+            ps.setObject(14, place.scheduleId)
+            ps.setString(15, place.typeCode)
+            ps.setString(16, place.subjectCode)
+            ps.setTimestamp(17, place.createdAt)
         }
     }
 }

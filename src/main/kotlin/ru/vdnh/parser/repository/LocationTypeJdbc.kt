@@ -13,7 +13,7 @@ class LocationTypeJdbc(private val jdbcTemplate: JdbcTemplate) : LocationTypeRep
 
     override fun saveLocationTypes(locationTypes: List<LocationTypeEntity>) {
         jdbcTemplate.batchUpdate(
-            "INSERT INTO location_type (code, name, name_en, name_cn) VALUES (?, ?, ?, ?)",
+            "INSERT INTO location_type (code, name, name_en, name_cn, icon_code) VALUES (?, ?, ?, ?, ?)",
             locationTypes,
             100
         ) { ps, locationType ->
@@ -21,6 +21,7 @@ class LocationTypeJdbc(private val jdbcTemplate: JdbcTemplate) : LocationTypeRep
             ps.setString(2, locationType.name)
             ps.setString(3, locationType.nameEn)
             ps.setString(4, locationType.nameCn)
+            ps.setString(5, locationType.iconCode)
         }
     }
 }

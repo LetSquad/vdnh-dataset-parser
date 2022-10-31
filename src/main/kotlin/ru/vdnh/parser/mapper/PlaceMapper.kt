@@ -2,11 +2,15 @@ package ru.vdnh.parser.mapper
 
 import org.springframework.stereotype.Component
 import ru.vdnh.parser.model.csv.PlaceCsv
+import ru.vdnh.parser.model.domain.LocationType
 import ru.vdnh.parser.model.domain.Place
 import ru.vdnh.parser.model.dto.dataset.DatasetPlaceDTO
 import ru.vdnh.parser.model.dto.place.PlaceDTO
 import ru.vdnh.parser.model.entity.PlaceEntity
+import ru.vdnh.parser.model.enums.LocationPlacement
+import ru.vdnh.parser.model.enums.PaymentConditions
 import java.sql.Timestamp
+import java.time.Duration
 import java.time.Instant
 
 @Component
@@ -15,27 +19,35 @@ class PlaceMapper(
     private val locationTypeMapper: LocationTypeMapper
 ) {
 
-    fun dtoToCsv(place: PlaceDTO) = PlaceCsv(
-        id = place.id,
-        title = place.properties.title,
-        type = place.properties.type,
-        priority = place.properties.order.toInt()
-    )
+    fun dtoToDomain(place: PlaceDTO, datasetPlace: DatasetPlaceDTO? = null): Place {
+        val locationType: LocationType = locationTypeMapper.placeDtoToDomain(place)
+        return Place(
+            id = place.id,
+            title = place.properties.title,
+            titleEn = place.properties.titleEn,
+            titleCn = place.properties.titleCn,
+            priority = place.properties.order.toInt(),
+            visitTime = Duration.ofMinutes(15),
+            placement = retrievePlacement(place.properties.title.lowercase(), locationType),
+            paymentConditions = if (place.properties.ticketsLink.isBlank()) PaymentConditions.FREE else PaymentConditions.TICKET,
+            url = place.properties.url,
+            imageUrl = place.properties.pic,
+            ticketsUrl = place.properties.ticketsLink.ifBlank { null },
+            isActive = !CLOSED_PLACE_IDS.contains(place.id),
+            latitude = place.properties.coordinates.last(),
+            longitude = place.properties.coordinates.first(),
+            schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
+            type = locationType
+        )
+    }
 
-    fun dtoToDomain(place: PlaceDTO, datasetPlace: DatasetPlaceDTO?) = Place(
+    fun domainToCsvDto(place: Place) = PlaceCsv(
         id = place.id,
-        title = place.properties.title,
-        titleEn = place.properties.titleEn,
-        titleCn = place.properties.titleCn,
-        priority = place.properties.order.toInt(),
-        url = place.properties.url,
-        imageUrl = place.properties.pic,
-        ticketsUrl = place.properties.ticketsLink.ifBlank { null },
-        isActive = !CLOSED_PLACES.contains(place.id),
-        latitude = place.properties.coordinates.last(),
-        longitude = place.properties.coordinates.first(),
-        schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
-        type = locationTypeMapper.placeDtoToDomain(place)
+        title = place.title,
+        type = place.type.name,
+        priority = place.priority,
+        placement = place.placement,
+        paymentConditions = place.paymentConditions
     )
 
     fun domainToEntity(place: Place, coordinatesId: Long) = PlaceEntity(
@@ -44,6 +56,9 @@ class PlaceMapper(
         titleEn = place.titleEn,
         titleCn = place.titleCn,
         priority = place.priority,
+        visitTimeMinutes = place.visitTime.toMinutes().toInt(),
+        placement = place.placement,
+        paymentConditions = place.paymentConditions,
         url = place.url,
         imageUrl = place.imageUrl,
         ticketsUrl = place.ticketsUrl,
@@ -55,9 +70,42 @@ class PlaceMapper(
         createdAt = Timestamp.from(Instant.now())
     )
 
+    private fun retrievePlacement(title: String, locationType: LocationType): LocationPlacement = when {
+        title.contains("дом") || title.contains("павильон") || title.contains("студия") -> {
+            LocationPlacement.INDOORS
+        }
+        title.contains("киоск") || title.contains("doner") -> LocationPlacement.OUTSIDE
+        else -> locationType.placement
+    }
+
     companion object {
-        private val CLOSED_PLACES = listOf(
-            3581L
+
+        private val CLOSED_PLACE_IDS = listOf<Long>(
+            242,
+            259,
+            270,
+            271,
+            281,
+            287,
+            289,
+            290,
+            294,
+            311,
+            327,
+            342,
+            347,
+            348,
+            353,
+            357,
+            360,
+            366,
+            431,
+            432,
+            2980,
+            3581,
+            4432,
+            6040,
+            6255
         )
     }
 }
