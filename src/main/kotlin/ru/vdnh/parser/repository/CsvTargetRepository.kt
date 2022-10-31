@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package ru.vdnh.parser.repository
 
 import org.apache.commons.csv.CSVFormat
@@ -22,8 +24,10 @@ class CsvTargetRepository(private val csvProperties: CsvProperties) {
                     place.title,
                     place.type,
                     place.priority,
+                    place.subject,
                     place.placement,
-                    place.paymentConditions
+                    place.paymentConditions,
+                    place.url
                 )
             }
         }
@@ -38,8 +42,10 @@ class CsvTargetRepository(private val csvProperties: CsvProperties) {
                     event.title,
                     event.type,
                     event.priority,
+                    event.subject,
                     event.placement,
-                    event.paymentConditions
+                    event.paymentConditions,
+                    event.url
                 )
             }
         }

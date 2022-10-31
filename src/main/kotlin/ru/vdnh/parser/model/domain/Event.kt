@@ -1,6 +1,7 @@
 package ru.vdnh.parser.model.domain
 
 import ru.vdnh.parser.model.enums.LocationPlacement
+import ru.vdnh.parser.model.enums.LocationSubject
 import ru.vdnh.parser.model.enums.PaymentConditions
 import java.math.BigDecimal
 import java.time.Duration
@@ -13,6 +14,9 @@ data class Event(
     val titleEn: String?,
     val titleCn: String?,
 
+    val type: LocationType,
+    val subject: LocationSubject?,
+
     val priority: Int,
     val visitTime: Duration,
     val placement: LocationPlacement,
@@ -24,7 +28,5 @@ data class Event(
     val latitude: BigDecimal?,
     val longitude: BigDecimal?,
 
-    val placeIds: List<Long>,
-
-    val type: LocationType
+    val placeIds: List<Long>
 )

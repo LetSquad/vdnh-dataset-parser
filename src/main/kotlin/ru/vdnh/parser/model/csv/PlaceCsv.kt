@@ -8,6 +8,8 @@ data class PlaceCsv(
     val title: String,
     val type: String,
     val priority: Int,
+    val subject: String?,
     val placement: LocationPlacement,
-    val paymentConditions: PaymentConditions
+    val paymentConditions: PaymentConditions,
+    val url: String
 )

@@ -1,6 +1,7 @@
 package ru.vdnh.parser.mapper
 
 import org.springframework.stereotype.Component
+import ru.vdnh.parser.model.VdnhDatasetParserConstants.BASE_URL
 import ru.vdnh.parser.model.csv.PlaceCsv
 import ru.vdnh.parser.model.domain.LocationType
 import ru.vdnh.parser.model.domain.Place
@@ -8,6 +9,7 @@ import ru.vdnh.parser.model.dto.dataset.DatasetPlaceDTO
 import ru.vdnh.parser.model.dto.place.PlaceDTO
 import ru.vdnh.parser.model.entity.PlaceEntity
 import ru.vdnh.parser.model.enums.LocationPlacement
+import ru.vdnh.parser.model.enums.LocationSubject
 import ru.vdnh.parser.model.enums.PaymentConditions
 import java.sql.Timestamp
 import java.time.Duration
@@ -26,6 +28,8 @@ class PlaceMapper(
             title = place.properties.title,
             titleEn = place.properties.titleEn,
             titleCn = place.properties.titleCn,
+            type = locationType,
+            subject = LocationSubject.forPlace(place.id),
             priority = place.properties.order.toInt(),
             visitTime = Duration.ofMinutes(15),
             placement = retrievePlacement(place.properties.title.lowercase(), locationType),
@@ -34,10 +38,9 @@ class PlaceMapper(
             imageUrl = place.properties.pic,
             ticketsUrl = place.properties.ticketsLink.ifBlank { null },
             isActive = !CLOSED_PLACE_IDS.contains(place.id),
-            latitude = place.properties.coordinates.last(),
-            longitude = place.properties.coordinates.first(),
             schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
-            type = locationType
+            latitude = place.properties.coordinates.last(),
+            longitude = place.properties.coordinates.first()
         )
     }
 
@@ -45,9 +48,11 @@ class PlaceMapper(
         id = place.id,
         title = place.title,
         type = place.type.name,
+        subject = place.subject?.nameRu,
         priority = place.priority,
         placement = place.placement,
-        paymentConditions = place.paymentConditions
+        paymentConditions = place.paymentConditions,
+        url = BASE_URL + place.url
     )
 
     fun domainToEntity(place: Place, coordinatesId: Long) = PlaceEntity(
@@ -66,7 +71,7 @@ class PlaceMapper(
         coordinatesId = coordinatesId,
         scheduleId = place.schedule?.id,
         typeCode = place.type.code,
-        subjectCode = null,
+        subjectCode = place.subject?.name,
         createdAt = Timestamp.from(Instant.now())
     )
 
@@ -80,7 +85,7 @@ class PlaceMapper(
 
     companion object {
 
-        private val CLOSED_PLACE_IDS = listOf<Long>(
+        private val CLOSED_PLACE_IDS = setOf<Long>(
             242,
             259,
             270,

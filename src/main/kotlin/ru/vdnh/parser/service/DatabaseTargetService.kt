@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.vdnh.parser.getLogger
 import ru.vdnh.parser.mapper.CoordinatesMapper
 import ru.vdnh.parser.mapper.EventMapper
+import ru.vdnh.parser.mapper.LocationSubjectMapper
 import ru.vdnh.parser.mapper.LocationTypeMapper
 import ru.vdnh.parser.mapper.PlaceMapper
 import ru.vdnh.parser.mapper.ScheduleMapper
@@ -18,10 +19,12 @@ import ru.vdnh.parser.model.dto.VdnhEventPlacesDTO
 import ru.vdnh.parser.model.dto.VdnhPlacesDTO
 import ru.vdnh.parser.model.dto.VdnhWorkloadDTO
 import ru.vdnh.parser.model.dto.dataset.VdnhDatasetDTO
+import ru.vdnh.parser.model.enums.LocationSubject
 import ru.vdnh.parser.repository.CoordinatesRepository
 import ru.vdnh.parser.repository.DatasetSourceRepository
 import ru.vdnh.parser.repository.EventPlaceRepository
 import ru.vdnh.parser.repository.EventRepository
+import ru.vdnh.parser.repository.LocationSubjectRepository
 import ru.vdnh.parser.repository.LocationTypeRepository
 import ru.vdnh.parser.repository.PlaceRepository
 import ru.vdnh.parser.repository.ScheduleRepository
@@ -31,12 +34,14 @@ import java.math.BigDecimal
 @Profile("database")
 class DatabaseTargetService(
     private val locationTypeMapper: LocationTypeMapper,
+    private val locationSubjectMapper: LocationSubjectMapper,
     private val coordinatesMapper: CoordinatesMapper,
     private val scheduleMapper: ScheduleMapper,
     private val placeMapper: PlaceMapper,
     private val eventMapper: EventMapper,
     private val datasetRepository: DatasetSourceRepository,
     private val locationTypeRepository: LocationTypeRepository,
+    private val locationSubjectRepository: LocationSubjectRepository,
     private val coordinatesRepository: CoordinatesRepository,
     private val scheduleRepository: ScheduleRepository,
     private val placeRepository: PlaceRepository,
@@ -92,8 +97,13 @@ class DatabaseTargetService(
         clearDatabase()
 
         log.info("4 – Filling database")
+
         locationTypes.map { locationTypeMapper.domainToEntity(it) }
             .also { locationTypeRepository.saveLocationTypes(it) }
+
+        LocationSubject.values()
+            .map { locationSubjectMapper.enumToEntity(it) }
+            .also { locationSubjectRepository.saveLocationSubjects(it) }
 
         val unknownNeighbors = HashSet<Long>()
         coordinates.values
@@ -137,6 +147,7 @@ class DatabaseTargetService(
 
     private fun clearDatabase() {
         locationTypeRepository.clearLocationTypes()
+        locationSubjectRepository.clearLocationSubjects()
         coordinatesRepository.clearCoordinates()
         scheduleRepository.clearSchedules()
         placeRepository.clearPlaces()

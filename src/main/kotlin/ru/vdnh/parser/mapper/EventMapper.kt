@@ -1,6 +1,7 @@
 package ru.vdnh.parser.mapper
 
 import org.springframework.stereotype.Component
+import ru.vdnh.parser.model.VdnhDatasetParserConstants.BASE_URL
 import ru.vdnh.parser.model.csv.EventCsv
 import ru.vdnh.parser.model.domain.Event
 import ru.vdnh.parser.model.domain.LocationType
@@ -22,6 +23,8 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
             title = event.properties.title,
             titleEn = event.properties.titleEn,
             titleCn = event.properties.titleCn,
+            type = locationType,
+            subject = null,
             priority = event.properties.order.toInt(),
             visitTime = Duration.ofMinutes(15),
             placement = locationType.placement,
@@ -30,8 +33,7 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
             imageUrl = event.properties.pic,
             latitude = event.properties.coordinates?.last(),
             longitude = event.properties.coordinates?.first(),
-            placeIds = event.properties.places?.map { it.toLong() } ?: emptyList(),
-            type = locationType
+            placeIds = event.properties.places?.map { it.toLong() } ?: emptyList()
         )
     }
 
@@ -39,9 +41,11 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
         id = event.id,
         title = event.title,
         type = event.type.name,
+        subject = event.subject?.nameRu,
         priority = event.priority,
         placement = event.placement,
-        paymentConditions = event.paymentConditions
+        paymentConditions = event.paymentConditions,
+        url = BASE_URL + event.url
     )
 
     fun domainToEntity(event: Event, coordinatesId: Long?) = EventEntity(
@@ -61,7 +65,7 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
         coordinatesId = coordinatesId,
         scheduleId = null,
         typeCode = event.type.code,
-        subjectCode = null,
+        subjectCode = event.subject?.name,
         createdAt = Timestamp.from(Instant.now())
     )
 
