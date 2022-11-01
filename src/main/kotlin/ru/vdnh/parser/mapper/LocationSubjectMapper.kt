@@ -11,6 +11,6 @@ class LocationSubjectMapper {
         code = locationSubject.name,
         name = locationSubject.nameRu,
         nameEn = locationSubject.nameEn,
-        nameCn = null
+        nameCn = locationSubject.nameCn
     )
 }
