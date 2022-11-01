@@ -2,12 +2,12 @@ package ru.vdnh.parser.model.domain
 
 data class Schedule(
     val id: Long,
-    val monday: String?,
-    val tuesday: String?,
-    val wednesday: String?,
-    val thursday: String?,
-    val friday: String?,
-    val saturday: String?,
-    val sunday: String?,
+    val monday: WorkingHours?,
+    val tuesday: WorkingHours?,
+    val wednesday: WorkingHours?,
+    val thursday: WorkingHours?,
+    val friday: WorkingHours?,
+    val saturday: WorkingHours?,
+    val sunday: WorkingHours?,
     val additionalInfo: String?
 )

@@ -5,7 +5,6 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
     HISTORY("История", "History"),
     KIDS("Детям", "For kids"),
     MOSCOW("Моя Москва", "Moscow"),
-    CINEMA("Кино", "Cinema"),
     TRANSPORT("Транспорт", "Transport"),
     NATURE("Природа", "Nature"),
     ANIMALS("Мир животных", "Animals"),
@@ -43,6 +42,7 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
                 258,
                 363,
                 350,
+                372,
                 478
             ),
 
@@ -51,11 +51,6 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
                 323,
                 243,
                 261
-            ),
-
-            CINEMA to setOf<Long>(
-                267,
-                311
             ),
 
             TRANSPORT to setOf<Long>(
@@ -85,15 +80,15 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
             ),
 
             ART to setOf<Long>(
+                267,
                 275,
+                368,
                 20186
             ),
 
             ARCHITECTURE to setOf<Long>(
                 348,
-                368,
                 290,
-                372,
                 276,
                 344,
                 358,

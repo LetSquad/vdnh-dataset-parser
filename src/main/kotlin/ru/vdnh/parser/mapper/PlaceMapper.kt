@@ -6,6 +6,7 @@ import ru.vdnh.parser.model.csv.PlaceCsv
 import ru.vdnh.parser.model.domain.LocationType
 import ru.vdnh.parser.model.domain.Place
 import ru.vdnh.parser.model.dto.dataset.DatasetPlaceDTO
+import ru.vdnh.parser.model.dto.dataset.ScheduleDTO
 import ru.vdnh.parser.model.dto.place.PlaceDTO
 import ru.vdnh.parser.model.entity.PlaceEntity
 import ru.vdnh.parser.model.enums.LocationPlacement
@@ -23,6 +24,8 @@ class PlaceMapper(
 
     fun dtoToDomain(place: PlaceDTO, datasetPlace: DatasetPlaceDTO? = null): Place {
         val locationType: LocationType = locationTypeMapper.placeDtoToDomain(place)
+        val scheduleList: List<ScheduleDTO>? = datasetPlace?.schedule
+
         return Place(
             id = place.id,
             title = place.properties.title,
@@ -38,7 +41,7 @@ class PlaceMapper(
             imageUrl = place.properties.pic,
             ticketsUrl = place.properties.ticketsLink.ifBlank { null },
             isActive = !CLOSED_PLACE_IDS.contains(place.id),
-            schedule = datasetPlace?.schedule?.let { scheduleMapper.dtoToDomain(place.id, it) },
+            schedule = if (scheduleList.isNullOrEmpty()) null else scheduleMapper.dtoToDomain(place.id, scheduleList),
             latitude = place.properties.coordinates.last(),
             longitude = place.properties.coordinates.first()
         )
