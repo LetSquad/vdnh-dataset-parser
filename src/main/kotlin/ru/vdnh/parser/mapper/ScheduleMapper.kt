@@ -50,7 +50,7 @@ class ScheduleMapper(private val mapper: ObjectMapper) {
 
         return WorkingHours(
             from = LocalTime.parse(workingHours.first()),
-            to = if (workingHours.last() == "24:00") {
+            to = if (workingHours.last() == END_OF_DAY) {
                 LocalTime.MIDNIGHT.minusSeconds(1)
             } else {
                 LocalTime.parse(workingHours.last())
@@ -94,6 +94,7 @@ class ScheduleMapper(private val mapper: ObjectMapper) {
         private const val DAILY = "Ежедневно"
         private const val WORKDAYS = "Будни"
         private const val DAY_OFF = "Выходной"
+        private const val END_OF_DAY = "24:00"
 
         private val DAY_NUMBERS = mapOf(
             "Пн" to 1,
