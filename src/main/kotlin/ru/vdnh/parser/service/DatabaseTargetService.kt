@@ -9,7 +9,6 @@ import ru.vdnh.parser.mapper.EventMapper
 import ru.vdnh.parser.mapper.LocationSubjectMapper
 import ru.vdnh.parser.mapper.LocationTypeMapper
 import ru.vdnh.parser.mapper.PlaceMapper
-import ru.vdnh.parser.mapper.ScheduleMapper
 import ru.vdnh.parser.model.VdnhDatasetParserConstants.EVENT_CATEGORY
 import ru.vdnh.parser.model.domain.Coordinates
 import ru.vdnh.parser.model.domain.Event
@@ -27,7 +26,6 @@ import ru.vdnh.parser.repository.EventRepository
 import ru.vdnh.parser.repository.LocationSubjectRepository
 import ru.vdnh.parser.repository.LocationTypeRepository
 import ru.vdnh.parser.repository.PlaceRepository
-import ru.vdnh.parser.repository.ScheduleRepository
 import java.math.BigDecimal
 
 @Service
@@ -36,14 +34,12 @@ class DatabaseTargetService(
     private val locationTypeMapper: LocationTypeMapper,
     private val locationSubjectMapper: LocationSubjectMapper,
     private val coordinatesMapper: CoordinatesMapper,
-    private val scheduleMapper: ScheduleMapper,
     private val placeMapper: PlaceMapper,
     private val eventMapper: EventMapper,
     private val datasetRepository: DatasetSourceRepository,
     private val locationTypeRepository: LocationTypeRepository,
     private val locationSubjectRepository: LocationSubjectRepository,
     private val coordinatesRepository: CoordinatesRepository,
-    private val scheduleRepository: ScheduleRepository,
     private val placeRepository: PlaceRepository,
     private val eventRepository: EventRepository,
     private val eventPlaceRepository: EventPlaceRepository
@@ -132,9 +128,6 @@ class DatabaseTargetService(
         }
 
         places.values
-            .mapNotNull { place -> place.schedule?.let { scheduleMapper.domainToEntity(it) } }
-            .also { scheduleRepository.saveSchedules(it) }
-        places.values
             .map { placeMapper.domainToEntity(it, coordinates.getValue(it.latitude to it.longitude).id) }
             .also { placeRepository.savePlaces(it) }
         events.values
@@ -149,7 +142,6 @@ class DatabaseTargetService(
         locationTypeRepository.clearLocationTypes()
         locationSubjectRepository.clearLocationSubjects()
         coordinatesRepository.clearCoordinates()
-        scheduleRepository.clearSchedules()
         placeRepository.clearPlaces()
         eventRepository.clearEvents()
         eventPlaceRepository.clearEventPlaces()

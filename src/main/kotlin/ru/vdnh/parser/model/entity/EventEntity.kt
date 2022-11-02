@@ -19,9 +19,9 @@ data class EventEntity(
     val isActive: Boolean,
     val startDate: Date?,
     val finishDate: Date?,
+    val schedule: String?,
 
     val coordinatesId: Long?,
-    val scheduleId: Long?,
 
     val typeCode: String,
     val subjectCode: String?,

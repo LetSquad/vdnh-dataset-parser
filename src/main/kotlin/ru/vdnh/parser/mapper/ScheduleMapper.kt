@@ -5,14 +5,12 @@ import org.springframework.stereotype.Component
 import ru.vdnh.parser.model.domain.Schedule
 import ru.vdnh.parser.model.domain.WorkingHours
 import ru.vdnh.parser.model.dto.dataset.ScheduleDTO
-import ru.vdnh.parser.model.entity.ScheduleEntity
 import java.time.LocalTime
 
 @Component
 class ScheduleMapper(private val mapper: ObjectMapper) {
 
     fun dtoToDomain(id: Long, schedule: List<ScheduleDTO>) = Schedule(
-        id = id,
         monday = schedule.findWorkingHours(1),
         tuesday = schedule.findWorkingHours(2),
         wednesday = schedule.findWorkingHours(3),
@@ -21,18 +19,6 @@ class ScheduleMapper(private val mapper: ObjectMapper) {
         saturday = schedule.findWorkingHours(6),
         sunday = schedule.findWorkingHours(7),
         additionalInfo = schedule.retrieveAdditionalInfo()
-    )
-
-    fun domainToEntity(schedule: Schedule) = ScheduleEntity(
-        id = schedule.id,
-        monday = schedule.monday?.let { mapper.writeValueAsString(it) },
-        tuesday = schedule.tuesday?.let { mapper.writeValueAsString(it) },
-        wednesday = schedule.wednesday?.let { mapper.writeValueAsString(it) },
-        thursday = schedule.thursday?.let { mapper.writeValueAsString(it) },
-        friday = schedule.friday?.let { mapper.writeValueAsString(it) },
-        saturday = schedule.saturday?.let { mapper.writeValueAsString(it) },
-        sunday = schedule.sunday?.let { mapper.writeValueAsString(it) },
-        additionalInfo = schedule.additionalInfo
     )
 
     private fun List<ScheduleDTO>.findWorkingHours(dayNumber: Int): WorkingHours? {
@@ -77,17 +63,11 @@ class ScheduleMapper(private val mapper: ObjectMapper) {
         return@find false
     }
 
-    private fun List<ScheduleDTO>.retrieveAdditionalInfo(): String? {
+    private fun List<ScheduleDTO>.retrieveAdditionalInfo(): List<String> {
         val additionalInfo: List<ScheduleDTO> = filter { schedule -> !NOT_ADDITIONAL_INFO.any { schedule.left.contains(it) } }
-        if (additionalInfo.isEmpty()) return null
+        if (additionalInfo.isEmpty()) return emptyList()
 
-        return additionalInfo.joinToString("\n") { scheduleInfo ->
-            if (scheduleInfo.right.isBlank()) {
-                scheduleInfo.left
-            } else {
-                "${scheduleInfo.left}: ${scheduleInfo.right}"
-            }
-        }
+        return additionalInfo.flatMap { listOf(it.left, it.right) }
     }
 
     companion object {

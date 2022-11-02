@@ -17,9 +17,9 @@ data class PlaceEntity(
     val imageUrl: String?,
     val ticketsUrl: String?,
     val isActive: Boolean,
+    val schedule: String?,
 
     val coordinatesId: Long,
-    val scheduleId: Long?,
 
     val typeCode: String,
     val subjectCode: String?,

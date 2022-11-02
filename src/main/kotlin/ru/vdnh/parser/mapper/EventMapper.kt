@@ -62,8 +62,8 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
         isActive = true,
         startDate = null,
         finishDate = null,
+        schedule = null,
         coordinatesId = coordinatesId,
-        scheduleId = null,
         typeCode = event.type.code,
         subjectCode = event.subject?.name,
         createdAt = Timestamp.from(Instant.now())

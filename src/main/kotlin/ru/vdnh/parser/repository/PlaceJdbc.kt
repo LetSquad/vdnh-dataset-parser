@@ -2,6 +2,7 @@
 
 package ru.vdnh.parser.repository
 
+import org.postgresql.util.PGobject
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.vdnh.parser.model.entity.PlaceEntity
@@ -17,7 +18,7 @@ class PlaceJdbc(private val jdbcTemplate: JdbcTemplate) : PlaceRepository {
         jdbcTemplate.batchUpdate(
             "INSERT INTO place " +
                     "(id, title, title_en, title_cn, priority, visit_time_minutes, placement, payment_conditions, url, " +
-                    "image_url, tickets_url, is_active, coordinates_id, schedule_id, type_code, subject_code, created_at) " +
+                    "image_url, tickets_url, is_active, schedule, coordinates_id, type_code, subject_code, created_at) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             places,
             100
@@ -34,8 +35,12 @@ class PlaceJdbc(private val jdbcTemplate: JdbcTemplate) : PlaceRepository {
             ps.setString(10, place.imageUrl)
             ps.setString(11, place.ticketsUrl)
             ps.setBoolean(12, place.isActive)
-            ps.setLong(13, place.coordinatesId)
-            ps.setObject(14, place.scheduleId)
+            val schedule = PGobject().apply {
+                type = "jsonb"
+                value = place.schedule
+            }
+            ps.setObject(13, schedule)
+            ps.setLong(14, place.coordinatesId)
             ps.setString(15, place.typeCode)
             ps.setString(16, place.subjectCode)
             ps.setTimestamp(17, place.createdAt)

@@ -1,5 +1,6 @@
 package ru.vdnh.parser.mapper
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 import ru.vdnh.parser.model.VdnhDatasetParserConstants.BASE_URL
 import ru.vdnh.parser.model.csv.PlaceCsv
@@ -18,6 +19,7 @@ import java.time.Instant
 
 @Component
 class PlaceMapper(
+    private val mapper: ObjectMapper,
     private val scheduleMapper: ScheduleMapper,
     private val locationTypeMapper: LocationTypeMapper
 ) {
@@ -71,8 +73,8 @@ class PlaceMapper(
         imageUrl = place.imageUrl,
         ticketsUrl = place.ticketsUrl,
         isActive = place.isActive,
+        schedule = place.schedule?.let { mapper.writeValueAsString(it) },
         coordinatesId = coordinatesId,
-        scheduleId = place.schedule?.id,
         typeCode = place.type.code,
         subjectCode = place.subject?.name,
         createdAt = Timestamp.from(Instant.now())

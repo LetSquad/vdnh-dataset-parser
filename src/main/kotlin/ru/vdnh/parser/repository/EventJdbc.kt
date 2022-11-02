@@ -2,6 +2,7 @@
 
 package ru.vdnh.parser.repository
 
+import org.postgresql.util.PGobject
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.vdnh.parser.model.entity.EventEntity
@@ -17,7 +18,7 @@ class EventJdbc(private val jdbcTemplate: JdbcTemplate) : EventRepository {
         jdbcTemplate.batchUpdate(
             "INSERT INTO event " +
                     "(id, title, title_en, title_cn, priority, visit_time_minutes, placement, payment_conditions, url, image_url, " +
-                    "is_active, start_date, finish_date, coordinates_id, schedule_id, type_code, subject_code, created_at) " +
+                    "is_active, start_date, finish_date, schedule, coordinates_id, type_code, subject_code, created_at) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             events,
             100
@@ -35,8 +36,12 @@ class EventJdbc(private val jdbcTemplate: JdbcTemplate) : EventRepository {
             ps.setBoolean(11, event.isActive)
             ps.setDate(12, event.startDate)
             ps.setDate(13, event.finishDate)
-            ps.setObject(14, event.coordinatesId)
-            ps.setObject(15, event.scheduleId)
+            val schedule = PGobject().apply {
+                type = "jsonb"
+                value = event.schedule
+            }
+            ps.setObject(14, schedule)
+            ps.setObject(15, event.coordinatesId)
             ps.setString(16, event.typeCode)
             ps.setString(17, event.subjectCode)
             ps.setTimestamp(18, event.createdAt)
