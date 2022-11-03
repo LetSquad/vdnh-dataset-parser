@@ -38,7 +38,7 @@ class PlaceMapper(
             priority = place.properties.order.toInt(),
             visitTime = Duration.ofMinutes(15),
             placement = retrievePlacement(place.properties.title.lowercase(), locationType),
-            paymentConditions = if (place.properties.ticketsLink.isBlank()) PaymentConditions.FREE else PaymentConditions.TICKET,
+            paymentConditions = retrievePaymentsConditions(place),
             url = place.properties.url,
             imageUrl = place.properties.pic,
             ticketsUrl = place.properties.ticketsLink.ifBlank { null },
@@ -86,6 +86,17 @@ class PlaceMapper(
         }
         title.contains("киоск") || title.contains("doner") -> LocationPlacement.OUTSIDE
         else -> locationType.placement
+    }
+
+    private fun retrievePaymentsConditions(place: PlaceDTO): PaymentConditions {
+        return if (
+            place.properties.ticketsLink.isNotBlank() ||
+            place.properties.title.startsWith("Колесо обозрения")
+        ) {
+            PaymentConditions.TICKET
+        } else {
+            PaymentConditions.FREE
+        }
     }
 
     companion object {

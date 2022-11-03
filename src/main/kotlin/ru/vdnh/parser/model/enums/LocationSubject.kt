@@ -57,7 +57,8 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
                 277,
                 323,
                 243,
-                261
+                261,
+                26329
             ),
 
             TRANSPORT to setOf<Long>(
