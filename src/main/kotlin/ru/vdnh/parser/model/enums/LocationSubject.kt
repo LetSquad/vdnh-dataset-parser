@@ -21,6 +21,13 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
             return null
         }
 
+        fun forEvent(eventId: Long): LocationSubject? {
+            for ((subject, eventIds) in EVENT_IDS_BY_SUBJECTS) {
+                if (eventIds.contains(eventId)) return subject
+            }
+            return null
+        }
+
         private val PLACE_IDS_BY_SUBJECTS = listOf(
             TECH to setOf<Long>(
                 269,
@@ -123,6 +130,69 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
                 282,
                 343,
                 353
+            )
+        )
+
+        private val EVENT_IDS_BY_SUBJECTS = listOf(
+            TECH to setOf<Long>(
+                29601,
+                6237,
+                31691,
+                30464,
+                31789,
+                1086,
+                25712,
+                17018,
+                30622,
+                13761
+            ),
+
+            HISTORY to setOf<Long>(
+                31306,
+                6246,
+                32025,
+                27693,
+                20077,
+                3697,
+                2493,
+                29399,
+                11787
+            ),
+
+            KIDS to setOf<Long>(
+                32408,
+                10768,
+                32536,
+                9767,
+                25684,
+                3954
+            ),
+
+            MOSCOW to setOf<Long>(
+                30175,
+                13837,
+                27922
+            ),
+
+            ANIMALS to setOf<Long>(
+                22553
+            ),
+
+            SPORT to setOf<Long>(
+                8531,
+                31662,
+                15312
+            ),
+
+            ART to setOf<Long>(
+                30473,
+                32546,
+                13893,
+                32398,
+                32400,
+                32417,
+                31407,
+                32757
             )
         )
     }

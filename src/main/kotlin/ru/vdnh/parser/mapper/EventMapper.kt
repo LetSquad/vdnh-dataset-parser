@@ -8,6 +8,7 @@ import ru.vdnh.parser.model.domain.LocationType
 import ru.vdnh.parser.model.dto.event.EventPlaceDTO
 import ru.vdnh.parser.model.entity.EventEntity
 import ru.vdnh.parser.model.entity.EventPlaceEntity
+import ru.vdnh.parser.model.enums.LocationSubject
 import ru.vdnh.parser.model.enums.PaymentConditions
 import java.sql.Timestamp
 import java.time.Duration
@@ -24,7 +25,7 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
             titleEn = event.properties.titleEn,
             titleCn = event.properties.titleCn,
             type = locationType,
-            subject = null,
+            subject = LocationSubject.forEvent(event.id),
             priority = event.properties.order.toInt(),
             visitTime = Duration.ofMinutes(15),
             placement = locationType.placement,
