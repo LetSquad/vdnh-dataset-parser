@@ -4,10 +4,14 @@ spring:
   main:
     web-application-type: none
     banner-mode: off
+  codec:
+    max-in-memory-size: 10MB
   datasource:
     url: 'jdbc:postgresql://localhost:5432/vdnh_back'
     username: 'postgres'
     password: 'postgres'
+vdnh-client:
+  vdnh-url: 'https://vdnh.ru'
 csv:
   places-target: 'csv-target/places.csv'
   events-target: 'csv-target/events.csv'

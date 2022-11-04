@@ -36,6 +36,7 @@ class DatabaseTargetService(
     private val coordinatesMapper: CoordinatesMapper,
     private val placeMapper: PlaceMapper,
     private val eventMapper: EventMapper,
+    private val vdnhService: VdnhService,
     private val datasetRepository: DatasetSourceRepository,
     private val locationTypeRepository: LocationTypeRepository,
     private val locationSubjectRepository: LocationSubjectRepository,
@@ -49,8 +50,8 @@ class DatabaseTargetService(
     fun parseDatasetsToDatabase() {
         log.info("1 – Parsing datasets")
         val vdnhDataset: VdnhDatasetDTO = datasetRepository.getDataset()
-        val vdnhPlaces: VdnhPlacesDTO = datasetRepository.getPlaces()
-        val vdnhEventPlaces: VdnhEventPlacesDTO = datasetRepository.getEventPlaces()
+        val vdnhPlaces: VdnhPlacesDTO = vdnhService.getVdnhPlaces()
+        val vdnhEventPlaces: VdnhEventPlacesDTO = vdnhService.getVdnhEventPlaces()
         val vdnhWorkload: VdnhWorkloadDTO = datasetRepository.getWorkload()
 
         log.info("2 – Mapping data")
