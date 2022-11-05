@@ -14,7 +14,6 @@ import ru.vdnh.parser.model.enums.LocationPlacement
 import ru.vdnh.parser.model.enums.LocationSubject
 import ru.vdnh.parser.model.enums.PaymentConditions
 import java.sql.Timestamp
-import java.time.Duration
 import java.time.Instant
 
 @Component
@@ -36,7 +35,7 @@ class PlaceMapper(
             type = locationType,
             subject = LocationSubject.forPlace(place.id),
             priority = place.properties.order.toInt(),
-            visitTime = Duration.ofMinutes(15),
+            visitTime = locationType.retrieveVisitTime(),
             placement = retrievePlacement(place.properties.title.lowercase(), locationType),
             paymentConditions = retrievePaymentsConditions(place),
             url = place.properties.url,

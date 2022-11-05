@@ -1,6 +1,7 @@
 package ru.vdnh.parser.model.domain
 
 import ru.vdnh.parser.model.enums.LocationPlacement
+import java.time.Duration
 
 data class LocationType(
 
@@ -13,4 +14,11 @@ data class LocationType(
     val iconColor: String,
 
     val placement: LocationPlacement
-)
+) {
+
+    fun retrieveVisitTime(): Duration = when (code) {
+        "MUSEUM", "CONCERTS_AND_SHOWS", "EXHIBITION" -> Duration.ofMinutes(60)
+        "PAVILION", "EXCURSION", "ENTERTAINMENT" -> Duration.ofMinutes(30)
+        else -> Duration.ofMinutes(15)
+    }
+}

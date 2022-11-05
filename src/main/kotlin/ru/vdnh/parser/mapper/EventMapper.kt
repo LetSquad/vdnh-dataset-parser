@@ -11,7 +11,6 @@ import ru.vdnh.parser.model.entity.EventPlaceEntity
 import ru.vdnh.parser.model.enums.LocationSubject
 import ru.vdnh.parser.model.enums.PaymentConditions
 import java.sql.Timestamp
-import java.time.Duration
 import java.time.Instant
 
 @Component
@@ -27,7 +26,7 @@ class EventMapper(private val locationTypeMapper: LocationTypeMapper) {
             type = locationType,
             subject = LocationSubject.forEvent(event.id),
             priority = event.properties.order.toInt(),
-            visitTime = Duration.ofMinutes(15),
+            visitTime = locationType.retrieveVisitTime(),
             placement = locationType.placement,
             paymentConditions = PaymentConditions.TICKET,
             url = event.properties.url,
