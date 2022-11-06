@@ -30,6 +30,8 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
 
         private val PLACE_IDS_BY_SUBJECTS = listOf(
             TECH to setOf<Long>(
+                268,
+                286,
                 269,
                 303,
                 280,
@@ -59,11 +61,6 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
                 243,
                 261,
                 26329
-            ),
-
-            TRANSPORT to setOf<Long>(
-                268,
-                286
             ),
 
             NATURE to setOf<Long>(
