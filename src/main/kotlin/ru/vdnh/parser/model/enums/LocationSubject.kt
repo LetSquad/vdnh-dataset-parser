@@ -52,7 +52,18 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
                 363,
                 350,
                 372,
-                478
+                478,
+                318,
+                332,
+                333,
+                404,
+                405,
+                406,
+                407,
+                409,
+                2521,
+                3272,
+                4857
             ),
 
             MOSCOW to setOf<Long>(
