@@ -8,19 +8,18 @@ import ru.vdnh.parser.model.VdnhDatasetParserConstants.EVENT_CATEGORY
 import ru.vdnh.parser.model.csv.EventCsv
 import ru.vdnh.parser.model.csv.PlaceCsv
 import ru.vdnh.parser.repository.CsvTargetRepository
-import ru.vdnh.parser.repository.DatasetSourceRepository
 
 @Service
 @Profile("csv")
 class CsvTargetService(
     private val placeMapper: PlaceMapper,
     private val eventMapper: EventMapper,
-    private val datasetRepository: DatasetSourceRepository,
+    private val vdnhService: VdnhService,
     private val csvTargetRepository: CsvTargetRepository
 ) {
 
     fun parsePlacesToCsv() {
-        val places: List<PlaceCsv> = datasetRepository.getPlaces()
+        val places: List<PlaceCsv> = vdnhService.getVdnhPlaces()
             .values
             .map { placeMapper.dtoToDomain(it) }
             .map { placeMapper.domainToCsvDto(it)  }
@@ -28,7 +27,7 @@ class CsvTargetService(
     }
 
     fun parseEventsToCsv() {
-        val events: List<EventCsv> = datasetRepository.getEventPlaces()
+        val events: List<EventCsv> = vdnhService.getVdnhEventPlaces()
             .values
             .filter { it.properties.cat == EVENT_CATEGORY }
             .map { eventMapper.dtoToDomain(it) }
