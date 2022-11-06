@@ -77,7 +77,18 @@ enum class LocationSubject(val nameRu: String, val nameEn: String, val nameCn: S
             NATURE to setOf<Long>(
                 345,
                 295,
-                292
+                292,
+                2906,
+                2902,
+                2904,
+                448,
+                2907,
+                468,
+                4923,
+                2901,
+                3203,
+                297,
+                262
             ),
 
             ANIMALS to setOf<Long>(
