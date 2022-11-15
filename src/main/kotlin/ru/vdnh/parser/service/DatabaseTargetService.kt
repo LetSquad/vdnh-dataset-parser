@@ -48,13 +48,13 @@ class DatabaseTargetService(
 
     @Transactional
     fun parseDatasetsToDatabase() {
-        log.info("1 – Parsing datasets")
+        log.info("Parsing datasets")
         val vdnhDataset: VdnhDatasetDTO = datasetRepository.getDataset()
         val vdnhPlaces: VdnhPlacesDTO = vdnhService.getVdnhPlaces()
         val vdnhEventPlaces: VdnhEventPlacesDTO = vdnhService.getVdnhEventPlaces()
         val vdnhWorkload: VdnhWorkloadDTO = datasetRepository.getWorkload()
 
-        log.info("2 – Mapping data")
+        log.info("Mapping data")
         val places: Map<Long, Place> = vdnhPlaces.values
             .associate { it.id to placeMapper.dtoToDomain(it, vdnhDataset.places[it.id.toString()]) }
         val events: Map<Long, Event> = vdnhEventPlaces.values
@@ -72,7 +72,7 @@ class DatabaseTargetService(
                     id = coordinatesId,
                     latitude = place.latitude,
                     longitude = place.longitude,
-                    connections = vdnhEventPlaces.getValue(place.id.toString()).properties.attractions,
+                    connections = vdnhEventPlaces[place.id.toString()]?.properties?.attractions ?: emptyList(),
                     loadFactor = vdnhWorkload[place.id.toString()]?.workload
                 )
             }
@@ -90,10 +90,10 @@ class DatabaseTargetService(
             }
         }
 
-        log.info("3 – Clearing database")
+        log.info("Clearing database")
         clearDatabase()
 
-        log.info("4 – Filling database")
+        log.info("Filling database")
 
         locationTypes.map { locationTypeMapper.domainToEntity(it) }
             .also { locationTypeRepository.saveLocationTypes(it) }

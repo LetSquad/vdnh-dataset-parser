@@ -19,6 +19,8 @@ data class LocationType(
     fun retrieveVisitTime(): Duration = when (code) {
         "MUSEUM", "CONCERTS_AND_SHOWS", "EXHIBITION" -> Duration.ofMinutes(60)
         "PAVILION", "EXCURSION", "ENTERTAINMENT" -> Duration.ofMinutes(30)
+        "MONUMENT" -> Duration.ofMinutes(5)
+        "ENTRY", "ENTRANCE" -> Duration.ZERO
         else -> Duration.ofMinutes(15)
     }
 }
