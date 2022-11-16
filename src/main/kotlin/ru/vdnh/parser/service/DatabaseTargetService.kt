@@ -37,6 +37,7 @@ class DatabaseTargetService(
     private val placeMapper: PlaceMapper,
     private val eventMapper: EventMapper,
     private val vdnhService: VdnhService,
+    private val routeDataService: RouteDataService,
     private val datasetRepository: DatasetSourceRepository,
     private val locationTypeRepository: LocationTypeRepository,
     private val locationSubjectRepository: LocationSubjectRepository,
@@ -56,7 +57,7 @@ class DatabaseTargetService(
 
         log.info("Mapping data")
         val places: Map<Long, Place> = vdnhPlaces.values
-            .associate { it.id to placeMapper.dtoToDomain(it, vdnhDataset.places[it.id.toString()]) }
+            .associate { it.id to placeMapper.dtoToDomain(it, vdnhEventPlaces[it.id.toString()], vdnhDataset.places[it.id.toString()]) }
         val events: Map<Long, Event> = vdnhEventPlaces.values
             .filter { it.properties.cat == EVENT_CATEGORY }
             .associate { it.id to eventMapper.dtoToDomain(it) }
@@ -137,9 +138,12 @@ class DatabaseTargetService(
         events.values
             .flatMap { eventMapper.domainToEventPlaceEntities(it) }
             .also { eventPlaceRepository.saveEventPlaces(it) }
+
+        routeDataService.fillRouteData()
     }
 
     private fun clearDatabase() {
+        routeDataService.clearRouteData()
         locationTypeRepository.clearLocationTypes()
         locationSubjectRepository.clearLocationSubjects()
         coordinatesRepository.clearCoordinates()

@@ -6,20 +6,15 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import ru.vdnh.parser.getLogger
 import ru.vdnh.parser.service.DatabaseTargetService
-import ru.vdnh.parser.service.RouteDataService
 
 @Component
 @Profile("database")
-class DatabaseTargetRunner(
-    private val databaseTargetService: DatabaseTargetService,
-    private val routeDataService: RouteDataService
-) : ApplicationRunner {
+class DatabaseTargetRunner(private val databaseTargetService: DatabaseTargetService) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments) {
         log.info("Dataset parsing with target = database started")
 
         databaseTargetService.parseDatasetsToDatabase()
-        routeDataService.fillRouteData()
 
         log.info("Dataset parsing with target = database finished successfully")
     }
